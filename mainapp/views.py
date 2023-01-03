@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, TemplateView
+from mainapp.models import News
 
 # Create your views here.
 
@@ -12,8 +13,8 @@ class ContactsView(TemplateView):
     template_name = "mainapp/contacts.html"
 
 
-class CoursesListView(TemplateView):
-    template_name = "mainapp/courses_list.html"
+class CoursesView(TemplateView):
+    template_name = "mainapp/courses.html"
 
 
 class DocSiteView(TemplateView):
@@ -26,3 +27,19 @@ class LoginView(TemplateView):
 
 class NewsView(TemplateView):
     template_name = "mainapp/news.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["news_list"] = News.objects.all()
+        return context
+    
+
+class NewsPageDetailView(TemplateView):
+    template_name = 'mainapp/news_detail.html'
+
+    def get_context_data(self, pk, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["news_object"] = get_object_or_404(News, pk = pk)
+        return context
+    
+
